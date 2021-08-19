@@ -1,0 +1,143 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Uno
+{
+    public static void main(String[] args)
+    {
+        ArrayList<Unocard> userdeck = new ArrayList<Unocard>();
+        ArrayList<Unocard> Computerdeck = new ArrayList<Unocard>();
+        
+ /****************************************************************************************************************/
+        int win;  //
+        Scanner input;
+        Unocard CurrentCard; 
+        int Choice; 
+        String currentColor; 
+        gameLoop:
+        while (true)
+        {
+            userdeck.clear(); //The Deck of the user is cleared.
+            Computerdeck.clear(); //The Deck of the Computer is cleared.
+            win = 0;
+            CurrentCard = new Unocard();// Currrent card on the board.
+            currentColor = CurrentCard.color; // the current color the on the board
+            System.out.println("\nWelcome from Farzan Omar Mustafa Tamer"); //The welcome message
+            draw(10, userdeck);// user and computer are given 10 random cards
+            draw(10, Computerdeck);
+            for (boolean playersTurn = true; win == 0; playersTurn ^= true)// determins player turns
+            {
+                Choice = 0; 
+                System.out.println("\nCurrent Card: " + CurrentCard.getType()); //displays the current card
+
+                if (playersTurn) 
+                {
+                	
+                    System.out.println("You Choose:");
+                    for (int i = 0; i < userdeck.size(); i++)
+                    {
+                        System.out.print(String.valueOf(i + 1) + ". " + 
+                        ((Unocard) userdeck.get(i) ).getType() + "\n");
+                    }
+                    System.out.println(String.valueOf(userdeck.size() + 1 ) + ". " + "Draw card" + "\n" + 
+                                       String.valueOf(userdeck.size() + 2) + ". " + "Stop");
+                    do
+                    {
+                        System.out.print("\nEnter the number of the choice: "); //Asks the user to enter a value to pick a card
+                        input = new Scanner(System.in);
+                    } while (!input.hasNextInt() );
+
+                    Choice = input.nextInt() - 1;
+
+                    if (Choice == userdeck.size() )
+                        draw(1, userdeck);
+                    else if (Choice == userdeck.size() + 1)
+                        break gameLoop;
+                    else if ( ((Unocard) userdeck.get(Choice)).canPlace(CurrentCard, currentColor) )
+                    {
+                        CurrentCard = (Unocard) userdeck.get(Choice);
+                        userdeck.remove(Choice);
+                        currentColor = CurrentCard.color;
+                       
+                        if (CurrentCard.value >= 10)
+                        {
+                            playersTurn = false; 
+
+                            switch (CurrentCard.value)
+                            {
+                                case 12: 
+                                System.out.println("2 Cards have drawn"); // Draws two cards when instructor
+                                draw(2,Computerdeck);
+                                break;
+                        
+                            }
+                        }
+                    } else System.out.println("Choice is invalid"); // Shows the invalid choice
+
+
+                } else 
+                {
+                    System.out.println("Computers turn " + String.valueOf(Computerdeck.size() ) //letting the player know the computers turn
+                                        + " cards left!" + ((Computerdeck.size() == 1) ? "UNO!":"") );
+                    
+                    for (Choice = 0; Choice < Computerdeck.size(); Choice++) 
+                    {//searches for the cards to play
+                        if ( ((Unocard) Computerdeck.get(Choice)).canPlace(CurrentCard, currentColor) ) 
+                            break; 
+                    }
+
+                    if (Choice == Computerdeck.size() )
+                    {
+                         System.out.println("Computer drawing cards"); 
+                         draw(1,Computerdeck);
+                    } else 
+                    {
+                         CurrentCard = (Unocard) Computerdeck.get(Choice);
+                         Computerdeck.remove(Choice);
+                         currentColor = CurrentCard.color;
+                         System.out.println("Computers Choice " + CurrentCard.getType());
+
+
+                         if (CurrentCard.value >= 10)
+                         {
+                             playersTurn = true; 
+
+                             switch (CurrentCard.value)
+                             {
+                                 case 12: 
+                                 System.out.println("2 cards are being picked up for you");// draws two cards
+                                 draw(2,userdeck);
+                                 break;
+  
+                             }
+                         }
+                    }
+
+
+                    if (userdeck.size() == 0)
+                        win = 1;
+                    else if (Computerdeck.size() == 0)
+                        win = -1;
+                }
+            } 
+
+            if (win == 1)
+                System.out.println("You win :)");// shows the player if they win 
+            else 
+                System.out.println("You lose :(");
+
+            System.out.print("\nPlay again? ");// askig to play again
+            input = new Scanner(System.in);
+
+            if (input.next().toLowerCase().contains("n") )// if player doesn't proceed then the game ends
+                break;
+        } 
+
+    }
+
+    public static void draw(int cards, ArrayList<Unocard> deck)
+    {
+        for (int i = 0; i < cards; i++)
+            deck.add(new Unocard() );
+    }
+}
