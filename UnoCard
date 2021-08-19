@@ -1,0 +1,76 @@
+import java.util.Random;
+
+public class Unocard
+{
+    public String color;
+    public int value;
+    private Random rand;
+    private String type;
+
+    public Unocard(int v, String c)
+    {
+        value = v;
+        color = c; 
+    }
+
+    
+    public Unocard()
+    {
+        rand = new Random();
+        value = rand.nextInt(12); 
+        if (value >= 12) 
+            value -= 12;
+        rand = new Random();
+        switch(rand.nextInt(4) )
+        {
+            case 0: color = "Red"; 
+                break;
+            case 1: color = "Green"; 
+                break;
+            case 2: color = "Blue"; 
+                break;
+            case 3: color = "Yellow"; 
+                break;
+        }
+ 
+        if (value >= 13)
+            color = "none";
+    }
+
+    public String getType()
+    {
+
+        type = "[";
+        if (color != "none")
+        {
+            type += this.color + " ";
+        }
+
+        switch(this.value)
+        {
+            default: type += String.valueOf(this.value); 
+                break;
+            case 10: type += "Skip"; 
+                break;
+            case 11: type += "Reverse"; 
+                break;
+            case 12: type += "Draw 2"; 
+                break;
+            
+        }
+        type += "]";
+        return type;
+    }
+
+
+    public boolean canPlace(Unocard o, String c)
+    {
+        if (this.color == c)
+            return true;
+        else if (this.value == o.value)
+            return true;
+        else if (this.color == "none") 
+            return true;
+        return false;
+    }
+}
